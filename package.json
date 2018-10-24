@@ -36,18 +36,6 @@
       "lcov"
     ]
   },
-  "standard": {
-    "global": [
-      "describe",
-      "it",
-      "beforeEach",
-      "afterEach"
-    ],
-    "ignore": [
-      "/test",
-      "/perf"
-    ]
-  },
   "dependencies": {
     "async": "^2.0.1",
     "cli-source-preview": "^1.0.0",
@@ -80,7 +68,6 @@
     "raw-loader": "^0.5.1",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
-    "standard": "*",
     "webpack": "3.x"
   },
   "repository": {
