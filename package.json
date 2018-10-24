@@ -1,25 +1,33 @@
 {
-  "name": "fast-sass-loader",
+  "name": "@4c/fast-sass-loader",
   "description": "fast sass loader for webpack",
   "version": "1.4.6",
   "main": "lib/index.js",
   "scripts": {
-    "lint": "standard --fix && npm-ensure -t deps",
+    "lint": "eslint lib",
+    "precommit": "lint-staged",
     "test": "npm run lint && npm run test-local",
     "perf": "node perf/index.js",
     "test-local": "mocha test/**/*.test.js",
     "test-cov": "nyc npm run test-local",
     "test-report": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "ci": "npm run lint && npm run test-cov && npm run test-report",
-    "release": "npm test && npm-ensure -t changelog && git release $npm_package_version && npm publish",
-    "precommit": "standard && npm-ensure -t deps"
+    "release": "npm test && npm-ensure -t changelog && git release $npm_package_version && npm publish"
   },
-  "ensure": {
-    "deps": {
-      "checkDirs": [
-        "lib/**/*"
-      ]
-    }
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "README.md": [
+      "doctoc",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 79,
+    "singleQuote": true,
+    "trailingComma": "all"
   },
   "nyc": {
     "reporter": [
@@ -44,24 +52,31 @@
     "async": "^2.0.1",
     "cli-source-preview": "^1.0.0",
     "co": "^4.6.0",
-    "fs-extra": "3.x",
     "loader-utils": "^1.1.0"
   },
   "peerDependencies": {
     "node-sass": "4.x || 3.x",
-    "webpack": "1.x || 2.x || 3.x || 4.x"
+    "webpack": "^>=3.0.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "coveralls": "^2.12.0",
     "css-loader": "^0.23.1",
+    "eslint": "^5.7.0",
+    "eslint-config-4catalyzer": "^0.4.4",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "fast-css-loader": "^1.0.2",
     "file-loader": "^0.9.0",
-    "husky": "*",
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
     "mocha": "^3.2.0",
     "node-sass": "^4.0.0",
     "npm-ensure": "^1.1.0",
     "nyc": "*",
+    "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
