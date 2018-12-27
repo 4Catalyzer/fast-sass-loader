@@ -1,7 +1,7 @@
 {
   "name": "@4c/fast-sass-loader",
   "description": "fast sass loader for webpack",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint lib",
