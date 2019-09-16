@@ -1,37 +1,31 @@
-'use strict'
+'use strict';
 
-const path = require('path')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const loader = require.resolve('../../..')
-const cssLoader = require.resolve('css-loader')
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const loader = require.resolve('../../..');
+const cssLoader = require.resolve('css-loader');
 
 module.exports = {
+  mode: 'development',
   context: path.join(__dirname),
   entry: {
-    index: './index.scss'
+    index: './index.scss',
   },
   output: {
     path: path.join(__dirname, '../../runtime/simple'),
-    filename: '[name].js'
+    filename: '[name].js',
   },
   module: {
     rules: [
       {
         test: /\.(scss|sass)$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            cssLoader,
-            loader
-          ]
-        })
+        use: [MiniCssExtractPlugin.loader, cssLoader, loader],
       },
       {
         test: /\.png$/,
-        loader: 'file-loader?name=[path][name].[ext]'
-      }
-    ]
+        loader: 'file-loader?name=[path][name].[ext]',
+      },
+    ],
   },
-  plugins: [
-    new ExtractTextPlugin('[name].css')
-  ]
-}
+  plugins: [new MiniCssExtractPlugin({ filename: '[name].css' })],
+};
