@@ -1,7 +1,7 @@
 {
   "name": "@4c/fast-sass-loader",
   "description": "fast sass loader for webpack",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
