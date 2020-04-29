@@ -1,13 +1,15 @@
-'use strict';
-
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const prettier = require('prettier');
 const rmdir = require('rimraf');
 
-function clearCRLF(raw) {
-  return raw.replace(/\r/g, '').trim();
+function assertAreEqual(input, expect) {
+  assert.equal(
+    prettier.format(input, { parser: 'css' }),
+    prettier.format(expect, { parser: 'css' }),
+  );
 }
 
 function handleError(err, stats, done) {
@@ -52,20 +54,20 @@ function runSimpleTest(done, fixtureName) {
     try {
       assert.equal(stats.errors, undefined);
 
-      let css = fs.readFileSync(
-        path.join(__dirname, 'runtime/' + fixtureName + '/index.css'),
+      const css = fs.readFileSync(
+        path.join(__dirname, `runtime/${fixtureName}/index.css`),
         'utf8',
       );
-      let expect = fs.readFileSync(
-        path.join(__dirname, 'fixtures/' + fixtureName + '/expect.css'),
+      const expect = fs.readFileSync(
+        path.join(__dirname, `fixtures/${fixtureName}/expect.css`),
         'utf8',
       );
 
-      assert.equal(clearCRLF(css), clearCRLF(expect));
+      assertAreEqual(css, expect);
 
       done();
-    } catch (err) {
-      done(err);
+    } catch (e) {
+      done(e);
     }
   });
 }
@@ -73,11 +75,16 @@ function runSimpleTest(done, fixtureName) {
 describe('test sass-loader', () => {
   const runtimeDir = path.join(__dirname, 'runtime');
 
-  beforeEach(done => {
+  // eslint-disable-next-line no-undef
+  before(done => {
     rmdir(runtimeDir, done);
   });
 
-  it.only('should load normal sass file', function(done) {
+  afterEach(done => {
+    rmdir(runtimeDir, done);
+  });
+
+  it('should load normal sass file', function(done) {
     const config = require('./fixtures/normal/webpack.config.js');
     const compiler = webpack(config);
 
@@ -89,30 +96,30 @@ describe('test sass-loader', () => {
       try {
         assert.equal(stats.errors, undefined);
 
-        let css = fs.readFileSync(
+        const css = fs.readFileSync(
           path.join(__dirname, 'runtime/normal/index.css'),
           'utf8',
         );
-        let expect = fs.readFileSync(
+        const expect = fs.readFileSync(
           path.join(__dirname, 'fixtures/normal/expect.css'),
           'utf8',
         );
 
-        assert.equal(clearCRLF(css), clearCRLF(expect));
+        assertAreEqual(css, expect);
 
-        let css2 = fs.readFileSync(
+        const css2 = fs.readFileSync(
           path.join(__dirname, 'runtime/normal/index2.css'),
           'utf8',
         );
-        let expect2 = fs.readFileSync(
+        const expect2 = fs.readFileSync(
           path.join(__dirname, 'fixtures/normal/expect2.css'),
           'utf8',
         );
 
-        assert.equal(clearCRLF(css2), clearCRLF(expect2));
+        assertAreEqual(css2, expect2);
         done();
-      } catch (err) {
-        done(err);
+      } catch (e) {
+        done(e);
       }
     });
   });
@@ -129,41 +136,40 @@ describe('test sass-loader', () => {
       try {
         assert.equal(stats.errors, undefined);
 
-        let css = fs.readFileSync(
+        const css = fs.readFileSync(
           path.join(__dirname, 'runtime/withData/index.css'),
           'utf8',
         );
-        let expect = fs.readFileSync(
+        const expect = fs.readFileSync(
           path.join(__dirname, 'fixtures/withData/expect.css'),
           'utf8',
         );
 
-        assert.equal(clearCRLF(css), clearCRLF(expect));
-
+        assertAreEqual(css, expect);
         done();
-      } catch (err) {
-        done(err);
+      } catch (e) {
+        done(e);
       }
     });
   });
 
-  it('should compile without options', function(done) {
+  it('should compile without options', done => {
     runSimpleTest(done, 'simple');
   });
 
-  it('should auto remove BOM header', function(done) {
+  it('should auto remove BOM header', done => {
     runSimpleTest(done, 'bom-issue');
   });
 
-  it('should resolve files with double extensions', function(done) {
+  it('should resolve files with double extensions', done => {
     runSimpleTest(done, 'double-extensions');
   });
 
-  it('should be able to import non sass files with a passed transformer', function(done) {
+  it('should be able to import non sass files with a passed transformer', done => {
     runSimpleTest(done, 'withTransformer');
   });
 
-  it('should be able to skip import in comment', function(done) {
+  it('should be able to skip import in comment', done => {
     runSimpleTest(done, 'comment-import');
   });
 });
